@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Entity\Traits\HasDescriptionTrait;
 use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasTimstampTrait;
 use App\Repository\StepRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -13,6 +14,7 @@ class Step
 {
     use HasIdTrait;
     use HasDescriptionTrait;
+    use HasTimstampTrait;
     #[ORM\Column(length: 255)]
     private ?string $content = null;
 

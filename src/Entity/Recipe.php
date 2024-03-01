@@ -5,7 +5,7 @@ namespace App\Entity;
 use App\Entity\Traits\HasDescriptionTrait;
 use App\Entity\Traits\HasIdTrait;
 use App\Entity\Traits\HasNameTrait;
-use App\Entity\Traits\HasTimestampTrait;
+use App\Entity\Traits\HasTimstampTrait;
 use App\Repository\RecipeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +18,7 @@ class Recipe
     use HasIdTrait;
     use HasNameTrait;
     use HasDescriptionTrait;
-    use HasTimestampTrait;
+    use HasTimstampTrait;
 
     #[ORM\Column]
     private ?bool $draft = null;
