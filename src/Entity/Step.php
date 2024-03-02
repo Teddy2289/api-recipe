@@ -4,6 +4,9 @@ namespace App\Entity;
 
 use App\Entity\Traits\HasDescriptionTrait;
 use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasNameTrait;
+use App\Entity\Traits\HasPriorityTrait;
+use App\Entity\Traits\HasTimstampTrait;
 use App\Repository\StepRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -12,20 +15,25 @@ use Doctrine\ORM\Mapping as ORM;
 class Step
 {
     use HasIdTrait;
-    use HasDescriptionTrait;
-    #[ORM\Column(length: 255)]
-    private ?string $content = null;
+    use HasPriorityTrait;
+    use HasTimstampTrait;
 
-    #[ORM\Column(type: Types::SMALLINT)]
-    private ?int $priority = null;
+    #[ORM\Column(type: Types::TEXT)]
+    private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'steps')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Recipe $recipe = null;
 
-    public function getId(): ?int
+    /**
+     * @var Collection<int, Image>
+     */
+    #[ORM\OneToMany(mappedBy: 'step', targetEntity: Image::class, cascade: ['persist', 'remove'])]
+    private Collection $images;
+
+    public function __construct()
     {
-        return $this->id;
+        $this->images = new ArrayCollection();
     }
 
     public function getContent(): ?string
@@ -33,21 +41,9 @@ class Step
         return $this->content;
     }
 
-    public function setContent(string $content): static
+    public function setContent(string $content): self
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    public function getPriority(): ?int
-    {
-        return $this->priority;
-    }
-
-    public function setPriority(int $priority): static
-    {
-        $this->priority = $priority;
 
         return $this;
     }
@@ -57,10 +53,45 @@ class Step
         return $this->recipe;
     }
 
-    public function setRecipe(?Recipe $recipe): static
+    public function setRecipe(?Recipe $recipe): self
     {
         $this->recipe = $recipe;
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, Image>
+     */
+    public function getImages(): Collection
+    {
+        return $this->images;
+    }
+
+    public function addImage(Image $image): self
+    {
+        if (!$this->images->contains($image)) {
+            $this->images[] = $image;
+            $image->setStep($this);
+        }
+
+        return $this;
+    }
+
+    public function removeImage(Image $image): self
+    {
+        if ($this->images->removeElement($image)) {
+            // set the owning side to null (unless already changed)
+            if ($image->getStep() === $this) {
+                $image->setStep(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getRecipe().' n°'.$this->getPriority();
     }
 }

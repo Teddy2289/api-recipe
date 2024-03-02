@@ -2,7 +2,6 @@
 
 namespace App\Entity\Traits;
 
-use App\Traits\Groups;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Mapping\Annotation as Gedmo;
 
