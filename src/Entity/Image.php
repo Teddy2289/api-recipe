@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Entity\Traits\HasDescriptionTrait;
+use App\Entity\Traits\HasIdTrait;
+use App\Entity\Traits\HasTimstampTrait;
 use App\Repository\ImageRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -9,31 +12,34 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: ImageRepository::class)]
 class Image
 {
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    use HasIdTrait;
+    use HasDescriptionTrait;
+
+//    use HasPriorityTrait;
+    use HasTimstampTrait;
 
     #[ORM\Column(length: 255)]
     private ?string $path = null;
 
-    #[ORM\Column(type: Types::SMALLINT)]
+    #[ORM\Column]
     private ?int $size = null;
 
     #[ORM\ManyToOne(inversedBy: 'images')]
     private ?Recipe $recipe = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\ManyToOne(inversedBy: 'images')]
+    private ?Step $step = null;
+
+    // NOTE: This is not a mapped field of entity metadata, just a simple property.
+    #[Vich\UploadableField(mapping: 'images', fileNameProperty: 'path', size: 'size')]
+    private ?File $file = null;
 
     public function getPath(): ?string
     {
         return $this->path;
     }
 
-    public function setPath(string $path): static
+    public function setPath(?string $path): self
     {
         $this->path = $path;
 
@@ -45,7 +51,7 @@ class Image
         return $this->size;
     }
 
-    public function setSize(int $size): static
+    public function setSize(?int $size): self
     {
         $this->size = $size;
 
@@ -57,10 +63,27 @@ class Image
         return $this->recipe;
     }
 
-    public function setRecipe(?Recipe $recipe): static
+    public function setRecipe(?Recipe $recipe): self
     {
         $this->recipe = $recipe;
 
         return $this;
+    }
+
+    public function getStep(): ?Step
+    {
+        return $this->step;
+    }
+
+    public function setStep(?Step $step): self
+    {
+        $this->step = $step;
+
+        return $this;
+    }
+
+    public function getFile(): ?File
+    {
+        return $this->file;
     }
 }

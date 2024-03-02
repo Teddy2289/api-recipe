@@ -1,4 +1,4 @@
-FIG=docker compose
+FIG=docker-compose
 
 # Dans la ligne de commande de notre machine, on vérifie si docker-compose est disponible
 HAS_DOCKER:=$(shell command -v $(FIG) 2> /dev/null)
@@ -54,7 +54,7 @@ migration: ## Génère une migration avec les changements des entités
 	$(EXEC) $(CONSOLE) make:migration
 
 migrate: ## Exécute les migrations
-	$(EXEC) $(CONSOLE) doctrine:migrations:migrate -n
+	docker-compose exec app $(CONSOLE) doctrine:migrations:migrate -n
 
 migrations.list: ## Liste les migrations
 	$(EXEC) $(CONSOLE) doctrine:migrations:list
